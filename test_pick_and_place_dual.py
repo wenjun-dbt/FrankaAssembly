@@ -20,9 +20,13 @@ import numpy as np
 robotip_0 = "172.16.0.3"
 robotip_1 = "172.16.1.3"
 robotips = [robotip_0,robotip_1]
+
 gripper_1 = franky.Gripper(robotip_1)
 gripper_0 = franky.Gripper(robotip_0)
 
+# #for open and grasp
+# gripper_1.open(speed)
+# gripper_0.grasp(0.0,0.1,60)
 
 def home(robot):
     if robot == 0:
@@ -52,7 +56,7 @@ with open("Dual-robots/saved_plan_print_dual_0417.json", "r") as f:
 
 speed = 0.1  # gripper [m/s]
 force = 60.0  # gripper [N]
-traj_factor = 2
+traj_factor = int(5)
 safe = True
 
 for i, command in enumerate(data):
@@ -62,9 +66,12 @@ for i, command in enumerate(data):
             home(0)
         print(i)
         print(command["type"])
-        print("Press Enter to continue...")
-        input()
-        print("The program has resumed.")
+
+        # #pause for every command, just for test
+        # print("Press Enter to continue...")
+        # input()
+        # print("The program has resumed.")
+
         # if command["robot_id"] == 0:
         #     continue
         if command["type"] == "pick_station":
@@ -85,13 +92,14 @@ for i, command in enumerate(data):
             robotip = robotips[int(robotid)]
             robot = Robot(robotip)
             robot.relative_dynamics_factor = RelativeDynamicsFactor(0.3, 0.3, 0.3)
+
             waypoint = np.array(command["joint_states"][0]).reshape(-1)
             waypoint_motion = JointWaypointMotion([JointWaypoint(waypoint)])
 
             print(f"Robot_{robotid} motion executing.")
             robot.move(waypoint_motion)
             new_traj = map_to_current(traj,robot.current_joint_state.position)
-            status = frankz.run(new_traj, robotip, traj_factor, 100.0, safe)
+            status = frankz.run(new_traj, robotip, traj_factor, 100.0, safe, 100.0)
 
         elif command["type"] == "move_l":
             robotid = command["robot_id"]
@@ -105,12 +113,10 @@ for i, command in enumerate(data):
                 robot_pose = cartesian_state.pose  # Contains end-effector pose and elbow position
                 ee_pose_trans = robot_pose.end_effector_pose.translation
                 ee_pose_quat = robot_pose.end_effector_pose.quaternion
-                print(ee_pose_trans)
                 pick_safe_pose = [ee_pose_trans[0],ee_pose_trans[1],ee_pose_trans[2] + 0.015]
-                print(pick_safe_pose)
                 cartesian_pick_motion = CartesianMotion(
                     RobotPose(Affine(pick_safe_pose, ee_pose_quat)))  # With target elbow angle
-                robot.move(cartesian_pick_motion)
+                #robot.move(cartesian_pick_motion)
 
                 #movej
                 waypoint_place = np.array(command["joint_states"]).reshape(-1)
