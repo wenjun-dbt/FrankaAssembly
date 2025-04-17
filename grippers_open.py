@@ -23,32 +23,10 @@ force = 60.0  # [N]
 
 #
 # # Your code before the pause
-print("The safe position is reached. Press Enter to continue...")
-# #
-# # # Pause until the user presses Enter
+print("Open the gripper?. Press Enter to continue...")
 input()
-# #
-# # # Your code after the pause
-
 print("The program has resumed.")
 #
 
 # gripper_1.open(speed)
 # gripper_0.grasp(0.0,0.1,60)
-
-
-
-
-# # Your code before the pause
-print("The safe position is reached. Press Enter to continue...")
-# #
-# # # Pause until the user presses Enter
-input()
-# #
-# # # Your code after the pause
-print("The program has resumed.")
-
-gripper_1.open(speed)
-
-
-#success = gripper.grasp(0.0, speed, force, epsilon_outer=1.0)
