@@ -28,5 +28,6 @@ input()
 print("The program has resumed.")
 #
 
-# gripper_1.open(speed)
-# gripper_0.grasp(0.0,0.1,60)
+gripper_1.open(speed)
+gripper_0.open(speed)
+#gripper_0.grasp(0.0,0.1,60)

@@ -16,6 +16,22 @@ import franky
 import csv
 import os
 
+
+import time
+from compas_eve import Publisher
+from compas_eve import Topic
+from compas_eve.mqtt import MqttTransport
+
+def send_capture_message():
+    topic = Topic("/compas_eve/zivid/")
+    tx = MqttTransport("broker.emqx.io")
+    publisher = Publisher(topic, transport=tx)
+    msg = dict(text=f"Hello world")
+    print(f"Publishing message: {msg}")
+    publisher.publish(msg)
+    time.sleep(2)
+
+
 # Function to save joint states to a CSV file
 def save_joint_states_to_csv(file_path, joint_states):
     # Format joint states to ensure each number has 15 digits
@@ -74,16 +90,35 @@ for i in range(20):
     # Specify the path to the CSV file
 
 
-    csv_file_path = 'Collect_data/robot0/world_frame3/hole_1.csv'
+    csv_file_path = 'Collect_data/zivid/zivid_1/zivid_capture_js.csv'
     save_joint_states_to_csv(csv_file_path, joint_pos)
+    send_capture_message()
     print(f"Saved joint states: {joint_pos} to {csv_file_path}")
+
     # #
+    #
 
     cartpos = cartesian_state.pose.end_effector_pose.translation
-    csv_file_path = 'Collect_data/robot0/world_frame3/cart_pos_1.csv'
-    save_joint_states_to_csv(csv_file_path, cartpos)
+    cartquat = cartesian_state.pose.end_effector_pose.quaternion
+    mat = cartesian_state.pose.end_effector_pose.matrix.reshape(-1)
+    print(mat)
+    # cart = np.concatenate((cartpos,cartquat))
+    csv_file_path = 'Collect_data/zivid/zivid_1/zivid_capture_mat.csv'
+    save_joint_states_to_csv(csv_file_path, mat)
     # Optionally print a message
-    print(f"Saved cartesian positions: {cartpos} to {csv_file_path}")
+    print(f"Saved cartesian positions: {mat} to {csv_file_path}")
+
+    cart = []
+    cartpos = cartesian_state.pose.end_effector_pose.translation
+    cartquat = cartesian_state.pose.end_effector_pose.quaternion
+    for p in cartpos:
+        cart.append(p)
+    for q in cartquat:
+        cart.append(q)
+    csv_file_path = 'Collect_data/zivid/zivid_1/zivid_capture_pos.csv'
+    save_joint_states_to_csv(csv_file_path, cart)
+    # Optionally print a message
+    print(f"Saved cartesian positions: {cart} to {csv_file_path}")
 
 
 
