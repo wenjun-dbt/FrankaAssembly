@@ -21,8 +21,8 @@ import numpy as np
 robotip_0 = "172.16.0.3"
 robotip_1 = "172.16.1.3"
 robotips = [robotip_0, robotip_1]
-gripper_1 = franky.Gripper(robotip_1)
-gripper_0 = franky.Gripper(robotip_0)
+# gripper_1 = franky.Gripper(robotip_1)
+# gripper_0 = franky.Gripper(robotip_0)
 
 def send_capture_message():
     topic = Topic("/compas_eve/zivid/")
@@ -70,17 +70,17 @@ safe = True
 for i, command in enumerate(data):
     # if i >= 0:
     # if i <= 16:
-    if i >= 0:
+    if i >= 92 :
         if i == 0:
             home(1)
             home(0)
         print(i)
         print(command["type"])
-        # print("Press Enter to continue...")
-        # input()
-        # print("The program has resumed.")
-        # if command["robot_id"] == 0:
-        #     continue
+        print("Press Enter to continue...")
+        input()
+        print("The program has resumed.")
+        if command["robot_id"] == 0:
+            continue
         if command["type"] == "pick_station":
             continue
         elif command["type"] == "gripper":
@@ -217,12 +217,6 @@ for i, command in enumerate(data):
                 else:
                     robot.move(waypoint_place_motion)
 
-                # if data[i + 1]["type"] == "gripper" and data[i + 1]["activate"] == True:
-                #     #pick
-                #     pass
-                # else:
-                #     #place
-                #     send_capture_message()
 
 # home(0)
 # home(1)

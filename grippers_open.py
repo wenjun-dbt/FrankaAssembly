@@ -11,14 +11,15 @@ from franky import JointWaypointMotion, JointWaypoint, CartesianMotion, \
 import json
 import frankz
 import franky
-
+import time
 
 robotip_1 = "172.16.1.3"
 robotip_0 = "172.16.0.3"
 gripper_1 = franky.Gripper(robotip_1)
+
 gripper_0 = franky.Gripper(robotip_0)
 
-speed = 0.01  # [m/s]
+speed = 0.1  # [m/s]
 force = 60.0  # [N]
 
 #
@@ -30,4 +31,4 @@ print("The program has resumed.")
 
 gripper_1.open(speed)
 gripper_0.open(speed)
-#gripper_0.grasp(0.0,0.1,60)
+# gripper_1.grasp(0.0,0.1,60, epsilon_outer=1.0)

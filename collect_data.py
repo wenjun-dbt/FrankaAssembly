@@ -52,6 +52,8 @@ def save_joint_states_to_csv(file_path, joint_states):
 robotip = "172.16.0.3"
 # robotip = "172.16.1.3"
 
+info = {}
+#info["fun"] = 'Hello world!'
 for i in range(20):
     print("Press Enter to Save...")
     # Pause until the user presses Enter
@@ -92,7 +94,7 @@ for i in range(20):
 
     csv_file_path = 'Collect_data/zivid/zivid_1/zivid_capture_js.csv'
     save_joint_states_to_csv(csv_file_path, joint_pos)
-    send_capture_message()
+    #send_capture_message()
     print(f"Saved joint states: {joint_pos} to {csv_file_path}")
 
     # #
@@ -101,11 +103,24 @@ for i in range(20):
     cartpos = cartesian_state.pose.end_effector_pose.translation
     cartquat = cartesian_state.pose.end_effector_pose.quaternion
     mat = cartesian_state.pose.end_effector_pose.matrix.reshape(-1)
+
+
+    info['mat'] = mat
+    info['js'] = joint_pos
     print(mat)
+    topic = Topic("/compas_eve/zivid/")
+
+    tx = MqttTransport("broker.emqx.io")
+    publisher = Publisher(topic, transport=tx)
+    print(f"Publishing message: {info}")
+    publisher.publish(info)
+    time.sleep(1)
+
     # cart = np.concatenate((cartpos,cartquat))
     csv_file_path = 'Collect_data/zivid/zivid_1/zivid_capture_mat.csv'
     save_joint_states_to_csv(csv_file_path, mat)
     # Optionally print a message
+
     print(f"Saved cartesian positions: {mat} to {csv_file_path}")
 
     cart = []
