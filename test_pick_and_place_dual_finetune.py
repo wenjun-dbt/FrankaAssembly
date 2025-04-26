@@ -79,8 +79,8 @@ for i, command in enumerate(data):
         print("Press Enter to continue...")
         input()
         print("The program has resumed.")
-        if command["robot_id"] == 0:
-            continue
+        # if command["robot_id"] == 0:
+        #     continue
         if command["type"] == "pick_station":
             continue
         elif command["type"] == "gripper":

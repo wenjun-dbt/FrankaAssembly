@@ -8,6 +8,12 @@ info = dict({
     "world": 1.0
 })
 
+info = dict({
+    "step": 100,
+    "type": 0
+})
+
+
 topic = Topic("/compas_eve/zivid/")
 tx = MqttTransport("broker.emqx.io")
 publisher = Publisher(topic, transport=tx)
