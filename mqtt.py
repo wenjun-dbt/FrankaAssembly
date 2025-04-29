@@ -9,12 +9,15 @@ info = dict({
 })
 
 info = dict({
-    "step": 100,
-    "type": 0
+    "step": 96,
+    "type": 2,
+    "part_id":10,
+    "robot_id":1
+
 })
 
 
-topic = Topic("/compas_eve/zivid/")
+topic = Topic("/ust/zivid/")
 tx = MqttTransport("broker.emqx.io")
 publisher = Publisher(topic, transport=tx)
 print(f"Publishing message: {info}")

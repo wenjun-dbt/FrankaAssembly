@@ -30,5 +30,5 @@ print("The program has resumed.")
 #
 
 gripper_1.open(speed)
-gripper_0.open(speed)
+# gripper_0.open(speed)
 # gripper_1.grasp(0.0,0.1,60, epsilon_outer=1.0)

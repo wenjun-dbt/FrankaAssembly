@@ -84,7 +84,7 @@ safe = True
 
 # exit()
 for i, command in enumerate(data):
-    if i >= 98:
+    if i <= 7:
     # if i <= 16:
     # if i >= 17:
         if i == 0:
@@ -159,6 +159,9 @@ for i, command in enumerate(data):
                     info['step'] = i
                     info['type'] = 0
                     send_capture_message(info)
+                    print("Press Enter to continue...")
+                    input()
+                    print("The program has resumed.")
 
 
                 waypoint_place = np.array(command["joint_states"]).reshape(-1)
@@ -243,6 +246,9 @@ for i, command in enumerate(data):
                     info['step'] = i
                     info['type'] = 1
                     send_capture_message(info)
+                    print("Press Enter to continue...")
+                    input()
+                    print("The program has resumed.")
 
 # home(0)
 # home(1)
