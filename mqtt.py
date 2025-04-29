@@ -11,8 +11,10 @@ info = dict({
 info = dict({
     "step": 96,
     "type": 2,
-    "part_id":10,
-    "robot_id":1
+    "part_id": 10,
+    "robot_id": 1,
+    "calibrate": 1
+
 
 })
 

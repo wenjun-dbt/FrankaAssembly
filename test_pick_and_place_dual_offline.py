@@ -175,67 +175,6 @@ for i, command in enumerate(data):
                 robot.move(cartesian_place_motion)
                 # robot.move(waypoint_place_motion)
 
-
-                """"
-                if i == 3:
-                    robot.move(waypoint_place_motion)
-                    cartesian_state = robot.current_cartesian_state
-                    robot_pose = cartesian_state.pose  # Contains end-effector pose and elbow position
-                    ee_pose_trans = robot_pose.end_effector_pose.translation
-                    ee_pose_quat = robot_pose.end_effector_pose.quaternion
-                    print(ee_pose_trans)
-                    pick_safe_pose = [ee_pose_trans[0] + 0.000, ee_pose_trans[1] + 0.000, ee_pose_trans[2] - 0.002]
-                    cartesian_pick_motion = CartesianMotion(
-                        RobotPose(Affine(pick_safe_pose, ee_pose_quat)))  # With target elbow angle
-                    robot.move(cartesian_pick_motion)
-                elif i == 20:
-                    robot.move(waypoint_place_motion)
-                    cartesian_state = robot.current_cartesian_state
-                    robot_pose = cartesian_state.pose  # Contains end-effector pose and elbow position
-                    ee_pose_trans = robot_pose.end_effector_pose.translation
-                    ee_pose_quat = robot_pose.end_effector_pose.quaternion
-                    print(ee_pose_trans)
-                    pick_safe_pose = [ee_pose_trans[0] + 0.000, ee_pose_trans[1] + 0.000, ee_pose_trans[2] + 0.002]
-                    cartesian_pick_motion = CartesianMotion(
-                        RobotPose(Affine(pick_safe_pose, ee_pose_quat)))  # With target elbow angle
-                    robot.move(cartesian_pick_motion)
-                elif i == 38:
-                    robot.move(waypoint_place_motion)
-                    cartesian_state = robot.current_cartesian_state
-                    robot_pose = cartesian_state.pose  # Contains end-effector pose and elbow position
-                    ee_pose_trans = robot_pose.end_effector_pose.translation
-                    ee_pose_quat = robot_pose.end_effector_pose.quaternion
-                    print(ee_pose_trans)
-                    pick_safe_pose = [ee_pose_trans[0] + 0.000, ee_pose_trans[1] + 0.000, ee_pose_trans[2] + 0.002]
-                    cartesian_pick_motion = CartesianMotion(
-                        RobotPose(Affine(pick_safe_pose, ee_pose_quat)))  # With target elbow angle
-                    robot.move(cartesian_pick_motion)
-                elif i == 96:
-                    # place
-                    cartesian_state = robot.current_cartesian_state
-                    robot_pose = cartesian_state.pose  # Contains end-effector pose and elbow position
-                    ee_pose_trans = robot_pose.end_effector_pose.translation
-                    ee_pose_quat = robot_pose.end_effector_pose.quaternion
-                    print(ee_pose_trans)
-                    pick_safe_pose = [ee_pose_trans[0] - 0.004, ee_pose_trans[1] - 0.004, ee_pose_trans[2] - 0.02]
-                    cartesian_pick_motion = CartesianMotion(
-                        RobotPose(Affine(pick_safe_pose, ee_pose_quat)))  # With target elbow angle
-                    robot.move(cartesian_pick_motion)
-                elif i == 56:
-                    robot.move(waypoint_place_motion)
-                    cartesian_state = robot.current_cartesian_state
-                    robot_pose = cartesian_state.pose  # Contains end-effector pose and elbow position
-                    ee_pose_trans = robot_pose.end_effector_pose.translation
-                    ee_pose_quat = robot_pose.end_effector_pose.quaternion
-                    print(ee_pose_trans)
-                    pick_safe_pose = [ee_pose_trans[0] + 0.000, ee_pose_trans[1] + 0.000, ee_pose_trans[2] + 0.002]
-                    cartesian_pick_motion = CartesianMotion(
-                        RobotPose(Affine(pick_safe_pose, ee_pose_quat)))  # With target elbow angle
-                    robot.move(cartesian_pick_motion)
-                else:
-                    robot.move(waypoint_place_motion)
-                    
-                """
                 # pick and place
                 if data[i + 1]["type"] == "gripper" and data[i + 1]["activate"] == True:
                     #pick

@@ -123,11 +123,12 @@ def forward_kinematics(joints,robot_ip):
 # gripper_0 = franky.Gripper(robotip_0)
 
 speed = 0.1 # [m/s]
-force = 60.0  # [N]
+force = 40.0  # [N]
 
-velocity = 0.1
-traj_factor = int(3)
+velocity = 0.5
+traj_factor = int(1)
 frequency = 100
+wait = 500.0
 safe = True
 k = 0
 for i, command in enumerate(data):
@@ -187,7 +188,7 @@ for i, command in enumerate(data):
             print(f"Robot_{robotid} motion executing.")
             robot.move(waypoint_motion)
             new_traj = map_to_current(traj, robot.current_joint_state.position)
-            status = frankz.run(new_traj, robotip, traj_factor, 500.0, safe, frequency)
+            status = frankz.run(new_traj, robotip, traj_factor, wait, safe, frequency)
 
 
         elif command["type"] == "move_l":

@@ -49,10 +49,6 @@ def move_to_calibration(transform, robotip = "172.16.0.3", velocity = 0.03):
     robot = Robot(robotip)
     robot.relative_dynamics_factor = RelativeDynamicsFactor(velocity, velocity, velocity)
     cartesian_mat = robot.current_cartesian_state.pose.end_effector_pose.matrix
-    # transform = [[0.98144076, -0.08830716, 0.17022312, -0.03058212],
-    #             [0.0742946, 0.993433, 0.08701228, -0.02423795],
-    #             [-0.1767891, -0.07275074, 0.98155635, 0.06191237],
-    #             [0., 0., 0., 1.]]
     transform = np.array(transform).reshape(4,4)
     print(f"Transform: {transform}")
     cartesian_state_calibrated = transform @ cartesian_mat
