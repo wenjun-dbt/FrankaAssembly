@@ -20,6 +20,7 @@ gripper_1 = franky.Gripper(robotip_1)
 gripper_0 = franky.Gripper(robotip_0)
 
 speed = 0.1  # [m/s]
+
 force = 60.0  # [N]
 
 #
@@ -30,5 +31,5 @@ print("The program has resumed.")
 #
 
 gripper_1.open(speed)
-# gripper_0.open(speed)
+gripper_0.open(speed)
 # gripper_1.grasp(0.0,0.1,60, epsilon_outer=1.0)
