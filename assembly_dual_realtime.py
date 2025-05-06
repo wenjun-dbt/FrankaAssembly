@@ -55,10 +55,13 @@ def send_capture_message(info):
     publisher.publish(info)
     time.sleep(0.1)
 
-def move_to_calibration(transform, robotip = "172.16.0.3", velocity = 0.03):
+
+def move_to_calibration(transform, safe_dist, robotip = "172.16.0.3", velocity = 0.03):
     robot = Robot(robotip)
     robot.relative_dynamics_factor = RelativeDynamicsFactor(velocity, velocity, velocity)
     cartesian_mat = robot.current_cartesian_state.pose.end_effector_pose.matrix
+    cartesian_trans = robot.current_cartesian_state.pose.end_effector_pose.translation
+
     transform = np.array(transform).reshape(4,4)
     print(f"Transform: {transform}")
     cartesian_state_calibrated = transform @ cartesian_mat
@@ -66,6 +69,16 @@ def move_to_calibration(transform, robotip = "172.16.0.3", velocity = 0.03):
     rot_mat = cartesian_state_calibrated[:3, :3]
     trans_mat = cartesian_state_calibrated[:3, 3]
     quat = Rotation.from_matrix(rot_mat).as_quat()
+
+    moved_dis = trans_mat - cartesian_trans
+    print(f"ee_pose_trans:{cartesian_trans}")
+    print(f"calibrate_trans:{trans_mat}")
+    print(f"moved_dis:{moved_dis}")
+
+    for dis in moved_dis:
+        if abs(dis) > safe_dist:
+            print(f"moved_dis{dis} exceeds safe_dist:{safe_dist}")
+            return
 
     place_pose = RobotPose(Affine(trans_mat, quat))
     cartesian_place_motion = CartesianMotion(place_pose)  # With target elbow angle
@@ -126,10 +139,10 @@ def forward_kinematics(joints,robot_ip):
 # gripper_0 = franky.Gripper(robotip_0)
 
 speed = 0.1 # [m/s]
-force = 20.0  # [N]
+force = 60.0  # [N]
 
 velocity = 0.1
-traj_factor = int(1)
+traj_factor = int(5)
 frequency = 100
 wait = 500.0
 safe = True
@@ -165,7 +178,7 @@ for i, command in enumerate(data):
         # print("Press Enter to continue...")
         # input()
         # print("The program has resumed.")
-        # if command["robot_id"] == 1:
+        # if command["robot_id"] == 0:
         #     continue
         if command["type"] == "pick_station":
             continue
@@ -247,14 +260,14 @@ for i, command in enumerate(data):
                     while not_get_delta_pose:
                         time.sleep(0.1)
 
-                    move_to_calibration(calibrated_poses[0], robotip, 0.1)
+                    move_to_calibration(calibrated_poses[0], 0.01, robotip, 0.1)
                     # info['type'] = 1
                     # send_capture_message(info)
 
                     # print("Press Enter to continue...")
                     # input()
                     # print("The program has resumed.")
-                    move_to_calibration(calibrated_poses[1], robotip, 0.05)
+                    move_to_calibration(calibrated_poses[1], 0.03, robotip, 0.05)
                     # info['type'] = 2
                     # send_capture_message(info)
 
