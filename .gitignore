@@ -1,0 +1,6 @@
+*.xml
+*.DS_Store
+*.pyc
+*.ini
+*.idea/
+#*.ply
