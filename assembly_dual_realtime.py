@@ -91,10 +91,10 @@ def listen_for_delta_pose(msg):
     calibrated_poses = [msg["correct_mat"],msg["insert_mat"]]
     not_get_delta_pose = False
 
-topic = Topic("/ust/pose/", Message)
-tx = MqttTransport(MQTT_SERVER)
-subscriber = Subscriber(topic, callback=listen_for_delta_pose, transport=tx)
-subscriber.subscribe()
+# topic = Topic("/ust/pose/", Message)
+# tx = MqttTransport(MQTT_SERVER)
+# subscriber = Subscriber(topic, callback=listen_for_delta_pose, transport=tx)
+# subscriber.subscribe()
 
 def home(robot):
     if robot == 0:

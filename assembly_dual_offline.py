@@ -22,31 +22,24 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 
 robotip_0 = "172.16.0.3"
-robotip_1 = "172.16.1.3"
+robotip_1 = "172.16.0.5"
 robotips = [robotip_0, robotip_1]
 # gripper_1 = franky.Gripper(robotip_1)
 # gripper_0 = franky.Gripper(robotip_0)
 
-def send_capture_message(info):
-    topic = Topic("/compas_eve/zivid/")
-    tx = MqttTransport("broker.emqx.io")
-    publisher = Publisher(topic, transport=tx)
-    print(f"Publishing message: {info}")
-    publisher.publish(info)
-    time.sleep(2)
 
 def home(robot):
     if robot == 0:
         home0 = data[10]["joint_states"][0]
         robot0 = Robot(robotip_0)
-        robot0.relative_dynamics_factor = RelativeDynamicsFactor(0.3, 0.3, 0.3)
+        robot0.relative_dynamics_factor = RelativeDynamicsFactor(0.1, 0.1, 0.1)
         home0_place_motion = JointWaypointMotion([JointWaypoint(home0)])
         print(f"Robot_0 going to home position.")
         robot0.move(home0_place_motion)
     elif robot == 1:
         home1 = data[2]["joint_states"][0]
         robot1 = Robot(robotip_1)
-        robot1.relative_dynamics_factor = RelativeDynamicsFactor(0.3, 0.3, 0.3)
+        robot1.relative_dynamics_factor = RelativeDynamicsFactor(0.1, 0.1, 0.1)
         home1_place_motion = JointWaypointMotion([JointWaypoint(home1)])
         print(f"Robot_1 going to home position.")
         robot1.move(home1_place_motion)
@@ -60,8 +53,8 @@ def map_to_current(traj, current):
     return new_traj
 
 
-
-with open("Dual-robots/assembly_dual_offline.json", "r") as f:
+with open("Dual-robots/assembly_dual_realtime.json", "r") as f:
+# with open("Dual-robots/assembly_dual_offline.json", "r") as f:
     data = json.load(f)
 
 
@@ -78,13 +71,13 @@ speed = 0.1 # [m/s]
 force = 60.0  # [N]
 
 velocity = 0.05
-traj_factor = int(8)
+traj_factor = int(3)
 frequency = 100
 safe = True
 
 # exit()
 for i, command in enumerate(data):
-    if i <= 7:
+    if i >= 11:
     # if i <= 16:
     # if i >= 17:
         if i == 0:
@@ -92,9 +85,9 @@ for i, command in enumerate(data):
             home(0)
         print(i)
         print(command["type"])
-        print("Press Enter to continue...")
-        input()
-        print("The program has resumed.")
+        # print("Press Enter to continue...")
+        # input()
+        # print("The program has resumed.")
         # if command["robot_id"] == 0:
         #     continue
         if command["type"] == "pick_station":
@@ -150,19 +143,6 @@ for i, command in enumerate(data):
                 robot.move(waypoint_place_motion)
             else:
                 # pick and place
-                if data[i + 1]["type"] == "gripper" and data[i + 1]["activate"] == True:
-                    #pick
-                    pass
-                else:
-                    #place
-                    info = {}
-                    info['step'] = i
-                    info['type'] = 0
-                    send_capture_message(info)
-                    print("Press Enter to continue...")
-                    input()
-                    print("The program has resumed.")
-
 
                 waypoint_place = np.array(command["joint_states"]).reshape(-1)
                 waypoint_place_motion = JointWaypointMotion([JointWaypoint(waypoint_place)])
@@ -174,20 +154,6 @@ for i, command in enumerate(data):
                 robot.relative_dynamics_factor = RelativeDynamicsFactor(velocity, velocity, velocity)
                 robot.move(cartesian_place_motion)
                 # robot.move(waypoint_place_motion)
-
-                # pick and place
-                if data[i + 1]["type"] == "gripper" and data[i + 1]["activate"] == True:
-                    #pick
-                    pass
-                else:
-                    #place
-                    info = {}
-                    info['step'] = i
-                    info['type'] = 1
-                    send_capture_message(info)
-                    print("Press Enter to continue...")
-                    input()
-                    print("The program has resumed.")
 
 # home(0)
 # home(1)
