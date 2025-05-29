@@ -75,7 +75,7 @@ def control_robot(robot_ip, trajectory, traj_factor=8, finished_event=None):
     print(f"Thread {robot_ip} 开始执行...")
     try:
         robot = Robot(robot_ip)
-        robot.relative_dynamics_factor = RelativeDynamicsFactor(0.03, 0.03, 0.03)
+        robot.relative_dynamics_factor = RelativeDynamicsFactor(0.05, 0.05, 0.05)
 
         # 移动到轨迹起点
         waypoint = np.array(trajectory[0]).reshape(-1)
@@ -111,32 +111,39 @@ robotip1 = robotips[1]
 
 traj0 = data[10]["joint_states"]
 traj1 = data[2]["joint_states"]
+
 # traj0.reverse()
 # traj1.reverse()
 
+for i in range(10):
+    # traj0.reverse()
+    # traj1.reverse()
 
-# 创建一个事件对象来监控 thread0 的状态
-thread0_finished = threading.Event()
 
-# 启动 thread0（绑定 Event）
-thread0 = threading.Thread(
-    target=control_robot,
-    args=(robotip0, traj0, 8),
-    kwargs={"finished_event": thread0_finished}
-)
-thread0.start()
+    # 创建一个事件对象来监控 thread0 的状态
+    thread0_finished = threading.Event()
 
-# 启动 thread1（不绑定 Event）
-thread1 = threading.Thread(
-    target=control_robot,
-    args=(robotip1, traj1, 8)
-)
-thread1.start()
+    # 启动 thread0（绑定 Event）
+    thread0 = threading.Thread(
+        target=control_robot,
+        args=(robotip0, traj0, 5),
+        kwargs={"finished_event": thread0_finished}
+    )
+    thread0.start()
 
-# 主线程等待 thread0 完成
-thread0_finished.wait()
-after_thread0()  # 立即执行后续操作
+    # 启动 thread1（不绑定 Event）
+    thread1 = threading.Thread(
+        target=control_robot,
+        args=(robotip1, traj1, 5)
+    )
+    thread1.start()
 
+    # 主线程等待 thread0 完成
+    # thread0_finished.wait()
+    # after_thread0()  # 立即执行后续操作
+
+    thread0.join()
+    thread1.join()
 # thread1 会继续运行，不受影响
 
 

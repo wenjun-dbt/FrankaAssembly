@@ -31,7 +31,8 @@ robotip_1 = "172.16.0.5"
 robotips = [robotip_0, robotip_1]
 calibrated_poses = []
 
-MQTT_SERVER  = "175.16.1.9" #"broker.emqx.io"
+# MQTT_SERVER  = "175.16.1.9" #"broker.emqx.io"
+MQTT_SERVER  = "localhost" #"broker.emqx.io"
 
 assembly_sequence = [[1, 1, [0, 0, 0.02], [0, -1, 0]],
                          [0, 2, [-0.02, 0, 0.02],[1, 0, 0]],
@@ -92,10 +93,10 @@ def listen_for_delta_pose(msg):
     calibrated_poses = [msg["correct_mat"],msg["insert_mat"]]
     not_get_delta_pose = False
 
-# topic = Topic("/ust/pose/", Message)
-# tx = MqttTransport(MQTT_SERVER)
-# subscriber = Subscriber(topic, callback=listen_for_delta_pose, transport=tx)
-# subscriber.subscribe()
+topic = Topic("/ust/pose/", Message)
+tx = MqttTransport(MQTT_SERVER)
+subscriber = Subscriber(topic, callback=listen_for_delta_pose, transport=tx)
+subscriber.subscribe()
 
 def home(robot):
     if robot == 0:
@@ -142,8 +143,8 @@ def forward_kinematics(joints,robot_ip):
 speed = 0.1 # [m/s]
 force = 60.0  # [N]
 
-velocity = 0.1
-traj_factor = int(5)
+velocity = 0.05
+traj_factor = int(3)
 frequency = 100
 wait = 500.0
 safe = True
@@ -261,14 +262,14 @@ for i, command in enumerate(data):
                     while not_get_delta_pose:
                         time.sleep(0.1)
 
-                    move_to_calibration(calibrated_poses[0], 0.01, robotip, 0.1)
+                    # move_to_calibration(calibrated_poses[0], 0.01, robotip, 0.02)
                     # info['type'] = 1
                     # send_capture_message(info)
-
+                    #
                     # print("Press Enter to continue...")
                     # input()
                     # print("The program has resumed.")
-                    move_to_calibration(calibrated_poses[1], 0.03, robotip, 0.05)
+                    # move_to_calibration(calibrated_poses[1], 0.03, robotip, 0.02)
                     # info['type'] = 2
                     # send_capture_message(info)
 

@@ -13,7 +13,7 @@ import frankz
 import franky
 import time
 
-robotip_1 = "172.16.1.3"
+robotip_1 = "172.16.0.5"
 robotip_0 = "172.16.0.3"
 gripper_1 = franky.Gripper(robotip_1)
 

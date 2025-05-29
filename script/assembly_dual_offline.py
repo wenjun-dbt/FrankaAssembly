@@ -78,7 +78,7 @@ safe = True
 
 # exit()
 for i, command in enumerate(data):
-    if i >= 11:
+    if i >= 0:
     # if i <= 16:
     # if i >= 17:
         if i == 0:
