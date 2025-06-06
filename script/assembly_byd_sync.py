@@ -32,7 +32,7 @@ speed = 0.1 # [m/s]
 force = 60.0  # [N]
 
 velocity = 0.02
-traj_factor = int(15)
+traj_factor = int(10)
 frequency = 100
 safe = True
 #

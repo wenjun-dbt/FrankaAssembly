@@ -6,7 +6,7 @@ from franky import JointWaypointMotion, JointWaypoint, CartesianMotion, \
     CartesianState, JointState, RelativeDynamicsFactor
 from franky import Robot
 
-from franky import Robot, JointVelocityMotion, JointPositionStopMotion,CartesianPoseStopMotion,CartesianVelocityMotion, Duration, JointMotion, Twist
+from franky import Robot, JointVelocityMotion, CartesianVelocityMotion, Duration, JointMotion, Twist
 
 robot = Robot("172.16.0.3")
 

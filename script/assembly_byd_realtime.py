@@ -25,32 +25,6 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 from franka_assembly import ASSEMBLY_DIR
 
-not_get_delta_pose = True
-robotip_0 = "172.16.0.3"
-robotip_1 = "172.16.0.5"
-robotips = [robotip_0, robotip_1]
-calibrated_poses = []
-
-# MQTT_SERVER  = "175.16.1.9" #"broker.emqx.io"
-MQTT_SERVER  = "localhost" #"broker.emqx.io"
-
-assembly_sequence = [
-    [0, 4, [0, 0, 0.02], [1, 0, 0]],
-    [1, 5, [0, 0, 0.02], [0, 0, -1]],
-    [0, 6, [0, 0, 0.02], [1, 0, 0]],
-    [1, 7, [0, 0, 0.02], [-1, 0, 0]],
-    #
-    # [1, 8, [0, 0, 0.02], [-1,0,0]],
-    # [1, 9, [0.02, 0, 0.02], [0,-1,0]],
-    # [1, 10, [0.02, 0, 0.02], [0,-1,0]],
-    #
-    # [0, 0, [0, 0, 0.02], [1,0,0]],
-    # [0, 1, [-0.02, 0, 0.02], [1,0,0]],
-    # [0, 2, [0.0, 0, 0.02], None],
-    # [0, 3, [0.02, 0, 0.02], [0,-1,0]],
-
-    [0, -1, None, None],
-    [1, -1, None, None]]
 
 
 def send_capture_message(info):
@@ -97,10 +71,7 @@ def listen_for_delta_pose(msg):
     calibrated_poses = [msg["correct_mat"],msg["insert_mat"]]
     not_get_delta_pose = False
 
-topic = Topic("/ust/pose/", Message)
-tx = MqttTransport(MQTT_SERVER)
-subscriber = Subscriber(topic, callback=listen_for_delta_pose, transport=tx)
-subscriber.subscribe()
+
 
 def home(robot):
     if robot == 0:
@@ -111,7 +82,7 @@ def home(robot):
         print(f"Robot_0 going to home position.")
         robot0.move(home0_place_motion)
     elif robot == 1:
-        home1 = data[10]["joint_states"][0]
+        home1 = data[2]["joint_states"][0]
         robot1 = Robot(robotip_1)
         robot1.relative_dynamics_factor = RelativeDynamicsFactor(0.03,0.03, 0.03)
         home1_place_motion = JointWaypointMotion([JointWaypoint(home1)])
@@ -126,12 +97,6 @@ def map_to_current(traj, current):
         new_traj.append(t - gap)
     return new_traj
 
-
-
-with open(ASSEMBLY_DIR + "/traj/byd/y.json", "r") as f:
-    data = json.load(f)
-
-
 def forward_kinematics(joints,robot_ip):
     waypoint_mat = np.array(frankz.fk(joints,robot_ip)).reshape(4,4).T
     print(waypoint_mat)
@@ -141,8 +106,40 @@ def forward_kinematics(joints,robot_ip):
     return RobotPose(Affine(trans_mat, quat))
 
 
-# gripper_1 = franky.Gripper(robotip_1)
-# gripper_0 = franky.Gripper(robotip_0)
+not_get_delta_pose = True
+robotip_0 = "172.16.0.3"
+robotip_1 = "172.16.0.5"
+robotips = [robotip_0, robotip_1]
+calibrated_poses = []
+
+# MQTT_SERVER  = "175.16.1.9" #"broker.emqx.io"
+MQTT_SERVER  = "localhost" #"broker.emqx.io"
+topic = Topic("/ust/pose/", Message)
+tx = MqttTransport(MQTT_SERVER)
+subscriber = Subscriber(topic, callback=listen_for_delta_pose, transport=tx)
+subscriber.subscribe()
+
+assembly_sequence = [
+    [0, 4, [0, 0, 0.02], [1, 0, 0]],
+    [1, 5, [0, 0, 0.02], [0, 0, -1]],
+    [0, 6, [0, 0, 0.02], [1, 0, 0]],
+    [1, 7, [0, 0, 0.02], [-1, 0, 0]],
+    #
+    # [1, 8, [0, 0, 0.02], [-1,0,0]],
+    # [1, 9, [0.02, 0, 0.02], [0,-1,0]],
+    # [1, 10, [0.02, 0, 0.02], [0,-1,0]],
+    #
+    # [0, 0, [0, 0, 0.02], [1,0,0]],
+    # [0, 1, [-0.02, 0, 0.02], [1,0,0]],
+    # [0, 2, [0.0, 0, 0.02], None],
+    # [0, 3, [0.02, 0, 0.02], [0,-1,0]],
+
+    [0, -1, None, None],
+    [1, -1, None, None]]
+
+
+with open(ASSEMBLY_DIR + "/traj/byd/y.json", "r") as f:
+    data = json.load(f)
 
 speed = 0.1 # [m/s]
 force = 60.0  # [N]
@@ -165,7 +162,7 @@ for i, command in enumerate(data):
                 pass
             else:
                 # place
-                data[i]["install_step"] = k
+                # data[i]["install_step"] = k
                 data[i]["part_id"] = assembly_sequence[k][1]
                 k += 1
 
@@ -243,7 +240,7 @@ for i, command in enumerate(data):
                     #pick
                     waypoint_place = np.array(command["joint_states"]).reshape(-1)
                     waypoint_place_motion = JointWaypointMotion([JointWaypoint(waypoint_place)])
-                    print(f"Robot_{robotid} pick/place executing.")
+                    print(f"Robot_{robotid} pick executing.")
                     # franky.LinearMotion
                     place_pose = forward_kinematics(waypoint_place, robotip)
                     cartesian_place_motion = CartesianMotion(place_pose)  # With target elbow angle
@@ -253,10 +250,10 @@ for i, command in enumerate(data):
                     # robot.move(waypoint_place_motion)
                 else:
                     #place
-                    if i == 24:
+                    if i == 24: #24
                         waypoint_place = np.array(command["joint_states"]).reshape(-1)
                         waypoint_place_motion = JointWaypointMotion([JointWaypoint(waypoint_place)])
-                        print(f"Robot_{robotid} pick/place executing.")
+                        print(f"Robot_{robotid} place executing.")
                         # franky.LinearMotion
                         place_pose = forward_kinematics(waypoint_place, robotip)
                         cartesian_place_motion = CartesianMotion(place_pose)  # With target elbow angle
@@ -280,7 +277,7 @@ for i, command in enumerate(data):
                         print("Press Enter to continue...")
                         input()
                         print("The program has resumed.")
-                        move_to_calibration(calibrated_poses[0], 0.01, robotip, 0.01)
+                        move_to_calibration(calibrated_poses[0], 0.02, robotip, 0.01)
 
                         print("Press Enter to continue...")
                         input()

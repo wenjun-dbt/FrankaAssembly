@@ -6,7 +6,7 @@ from compas_eve.mqtt import MqttTransport
 info = dict({
     "step": 33,
     "type": 2,
-    "part_id": 7,
+    "part_id": 5,
     "robot_id": 1,
     "assembly_calibration": 1
 })

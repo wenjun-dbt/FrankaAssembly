@@ -68,7 +68,7 @@ for i in range(20):
     cartesian_state = robot.current_cartesian_state
     robot_pose = cartesian_state.pose  # Contains end-effector pose and elbow position
     ee_pose = robot_pose.end_effector_pose
-    elbow_pos = robot_pose.elbow_position
+    # elbow_pos = robot_pose.elbow_position
     robot_velocity = cartesian_state.velocity  # Contains end-effector twist and elbow velocity
     ee_twist = robot_velocity.end_effector_twist
     elbow_vel = robot_velocity.elbow_velocity
@@ -108,9 +108,9 @@ for i in range(20):
     info['mat'] = mat
     info['js'] = joint_pos
     print(mat)
-    topic = Topic("/compas_eve/zivid/")
+    topic = Topic("/caliboard/zivid/")
 
-    tx = MqttTransport("broker.emqx.io")
+    tx = MqttTransport("localhost")
     publisher = Publisher(topic, transport=tx)
     print(f"Publishing message: {info}")
     publisher.publish(info)
